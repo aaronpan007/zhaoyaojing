@@ -1,11 +1,14 @@
 {
-  "functions": {
-    "api/**/*.js": {
-      "maxDuration": 60
-    },
-    "api/**/*.py": {
-      "maxDuration": 300,
-      "memory": 1024
+  "builds": [
+    {
+      "src": "api/generate_warning_report.py",
+      "use": "@vercel/python"
     }
-  }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/generate_warning_report",
+      "destination": "/api/generate_warning_report.py"
+    }
+  ]
 } 
