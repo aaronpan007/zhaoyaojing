@@ -12,7 +12,9 @@
   "functions": {
     "api/server.js": {
       "runtime": "nodejs18.x",
-      "maxDuration": 300
+      "maxDuration": 300,
+      "memory": 1024,
+      "regions": ["iad1"]
     }
   },
   "rewrites": [
