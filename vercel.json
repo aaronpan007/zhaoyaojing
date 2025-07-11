@@ -1,14 +1,23 @@
 {
   "builds": [
     {
-      "src": "api/generate_warning_report.py",
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "dist" }
+    },
+    {
+      "src": "api/**/*.py",
       "use": "@vercel/python"
     }
   ],
   "rewrites": [
     {
-      "source": "/api/generate_warning_report",
-      "destination": "/api/generate_warning_report.py"
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 } 
