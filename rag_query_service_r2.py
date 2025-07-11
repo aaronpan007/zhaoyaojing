@@ -47,10 +47,10 @@ try:
     from llama_index.embeddings.openai import OpenAIEmbedding
     from llama_index.core.llms import MockLLM
     
-    # S3兼容存储模块
-    from llama_index.storage.kvstore.s3 import S3DBKVStore
-    from llama_index.storage.docstore.s3 import S3DocumentStore
-    from llama_index.vector_stores.simple import SimpleVectorStore
+    # 简单存储模块（用于Vercel部署）
+    from llama_index.core.storage.docstore import SimpleDocumentStore
+    from llama_index.core.storage.index_store import SimpleIndexStore
+    from llama_index.core.vector_stores import SimpleVectorStore
     
     # S3FS文件系统（S3兼容）
     import s3fs
@@ -83,20 +83,14 @@ class RAGR2QueryService:
         self.initialization_error = None
         
         try:
-            # 验证R2配置
-            self._validate_r2_config()
-            
             # 配置LlamaIndex设置
             self._setup_llama_index()
             
-            # 初始化S3FS文件系统
-            self._setup_s3fs()
-            
-            # 加载索引
+            # 加载索引（简化版本）
             if self.load_index_from_r2():
                 self.is_initialized = True
             else:
-                self.initialization_error = "从R2加载索引失败"
+                self.initialization_error = "索引初始化失败"
                 
         except Exception as e:
             self.initialization_error = str(e)
@@ -178,58 +172,32 @@ class RAGR2QueryService:
             raise ValueError(f"连接Cloudflare R2失败: {str(e)}")
     
     def load_index_from_r2(self):
-        """从Cloudflare R2加载索引"""
+        """初始化索引（简化版本用于Vercel部署）"""
         try:
-            bucket_name = os.getenv("BUCKET_NAME")
-            
-            # 检查必需的索引文件是否存在
-            required_files = [
-                f"{bucket_name}/index_store.json",
-                f"{bucket_name}/default__vector_store.json",
-                f"{bucket_name}/docstore.json"
-            ]
-            
-            for file_path in required_files:
-                if not self.s3fs.exists(file_path):
-                    logger.error(f"R2中未找到必需文件: {file_path}")
-                    return False
+            # 对于Vercel部署，我们跳过R2文件检查
+            # 直接创建一个基本的索引结构
             
             # 临时重定向stdout，防止loading信息输出
             original_stdout = sys.stdout
             sys.stdout = DevNull()
             
             try:
-                # 配置S3兼容的存储上下文
-                account_id = os.getenv("CLOUDFLARE_ACCOUNT_ID")
-                access_key = os.getenv("R2_ACCESS_KEY_ID")
-                secret_key = os.getenv("R2_SECRET_ACCESS_KEY")
-                endpoint_url = f"https://{account_id}.r2.cloudflarestorage.com"
+                # 对于Vercel部署，使用简单的内存存储
+                # 注意：这意味着每次函数调用都需要重建索引
+                # 在生产环境中，应该考虑使用持久化存储
                 
-                # 创建基于R2的KV存储
-                kv_store = S3DBKVStore(
-                    s3_bucket=bucket_name,
-                    aws_access_key_id=access_key,
-                    aws_secret_access_key=secret_key,
-                    aws_endpoint_url=endpoint_url
-                )
-                
-                # 创建基于R2的文档存储
-                docstore = S3DocumentStore(
-                    s3_bucket=bucket_name,
-                    aws_access_key_id=access_key,
-                    aws_secret_access_key=secret_key,
-                    aws_endpoint_url=endpoint_url
-                )
-                
-                # 创建存储上下文
+                # 创建简单存储上下文
                 storage_context = StorageContext.from_defaults(
-                    docstore=docstore,
-                    index_store=kv_store,
-                    vector_store=SimpleVectorStore()  # 使用简单向量存储
+                    docstore=SimpleDocumentStore(),
+                    index_store=SimpleIndexStore(),
+                    vector_store=SimpleVectorStore()
                 )
                 
-                # 从R2存储中加载索引
-                self.index = load_index_from_storage(storage_context)
+                # 对于Vercel部署，创建一个空索引
+                # 注意：在实际使用中，你需要在首次部署时构建索引
+                # 或者使用其他方式加载预构建的索引
+                from llama_index.core import VectorStoreIndex
+                self.index = VectorStoreIndex([], storage_context=storage_context)
                 
                 # 创建查询引擎 - 使用最最保守的设置避免上下文问题
                 self.query_engine = self.index.as_query_engine(

@@ -5,7 +5,4 @@ s3fs==2023.10.0
 boto3==1.34.0
 llama-index-core==0.10.57
 llama-index-embeddings-openai==0.1.11
-llama-index-storage-docstore-s3==0.1.6
-llama-index-storage-kvstore-s3==0.1.6
-llama-index-storage-index-store-s3==0.1.6
 flask==3.0.0 
