@@ -18,17 +18,11 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/api/server"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/api/server"
+      "destination": "/api/server.js"
     },
     {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "source": "/((?!api).*)",
+      "destination": "/index.html"
     }
   ],
   "env": {
