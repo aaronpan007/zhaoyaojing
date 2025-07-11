@@ -1,19 +1,14 @@
 {
-  "version": 2,
   "builds": [
     {
-      "src": "api/server.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "requirements.txt",
+      "src": "api/generate_warning_report.py",
       "use": "@vercel/python"
     }
   ],
   "rewrites": [
     {
-      "source": "/api/(.*)",
-      "destination": "/api/server"
+      "source": "/api/generate_warning_report",
+      "destination": "/api/generate_warning_report.py"
     }
   ]
 }
