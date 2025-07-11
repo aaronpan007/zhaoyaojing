@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "捞男捞女照妖镜 - AI情感安全助理，智能识别约会对象风险",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
