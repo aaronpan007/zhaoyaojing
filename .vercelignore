@@ -1,0 +1,19 @@
+   # 本地开发脚本（包含s3fs/boto3依赖）
+   local_scripts/
+   
+   # 知识库文件
+   my_knowledge/
+   
+   # 虚拟环境
+   venv/
+   
+   # 构建输出和缓存
+   storage/
+   uploads/
+   *.log
+   .DS_Store
+   
+   # Python 缓存
+   __pycache__/
+   *.pyc
+   *.pyo
