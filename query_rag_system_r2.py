@@ -23,9 +23,9 @@ from llama_index.core import (
 from llama_index.core.embeddings import BaseEmbedding
 
 # S3兼容存储模块
-from llama_index.storage.kvstore.s3 import S3DBKVStore
-from llama_index.storage.docstore.s3 import S3DocumentStore
-from llama_index.vector_stores.simple import SimpleVectorStore
+from llama_index.core.storage.docstore import SimpleDocumentStore
+from llama_index.core.storage.index_store import SimpleIndexStore
+from llama_index.core.vector_stores import SimpleVectorStore
 
 # S3FS文件系统（S3兼容）
 import s3fs
@@ -238,27 +238,15 @@ class RAGR2ReplicateQueryService:
                 secret_key = os.getenv("R2_SECRET_ACCESS_KEY")
                 endpoint_url = f"https://{account_id}.r2.cloudflarestorage.com"
                 
-                # 创建基于R2的KV存储
-                kv_store = S3DBKVStore(
-                    s3_bucket=bucket_name,
-                    aws_access_key_id=access_key,
-                    aws_secret_access_key=secret_key,
-                    aws_endpoint_url=endpoint_url
-                )
+                # 对于Vercel部署，使用简单的内存存储
+                # 注意：这意味着每次函数调用都需要重建索引
+                # 在生产环境中，应该考虑使用持久化存储
                 
-                # 创建基于R2的文档存储
-                docstore = S3DocumentStore(
-                    s3_bucket=bucket_name,
-                    aws_access_key_id=access_key,
-                    aws_secret_access_key=secret_key,
-                    aws_endpoint_url=endpoint_url
-                )
-                
-                # 创建存储上下文
+                # 创建简单存储上下文
                 storage_context = StorageContext.from_defaults(
-                    docstore=docstore,
-                    index_store=kv_store,
-                    vector_store=SimpleVectorStore()  # 使用简单向量存储
+                    docstore=SimpleDocumentStore(),
+                    index_store=SimpleIndexStore(),
+                    vector_store=SimpleVectorStore()
                 )
                 
                 # 从R2存储中加载索引
