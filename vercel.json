@@ -1,51 +1,11 @@
 {
-  "version": 2,
-  "name": "ai-emotional-safety-assistant",
-  "build": {
-    "env": {
-      "PYTHON_VERSION": "3.9"
-    }
-  },
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "installCommand": "npm install && pip install python-dotenv requests openai s3fs boto3 llama-index-core llama-index-embeddings-openai llama-index-storage-docstore-simple llama-index-storage-kvstore-simple llama-index-storage-index-store-simple",
   "functions": {
-    "api/server.js": {
-      "runtime": "nodejs18.x",
+    "api/**/*.js": {
+      "maxDuration": 60
+    },
+    "api/**/*.py": {
       "maxDuration": 300,
       "memory": 1024
     }
-  },
-  "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "/api/server.js"
-    },
-    {
-      "source": "/((?!api).*)",
-      "destination": "/index.html"
-    }
-  ],
-  "env": {
-    "NODE_ENV": "production"
-  },
-  "headers": [
-    {
-      "source": "/api/(.*)",
-      "headers": [
-        {
-          "key": "Access-Control-Allow-Origin",
-          "value": "*"
-        },
-        {
-          "key": "Access-Control-Allow-Methods",
-          "value": "GET, POST, PUT, DELETE, OPTIONS"
-        },
-        {
-          "key": "Access-Control-Allow-Headers",
-          "value": "Content-Type, Authorization"
-        }
-      ]
-    }
-  ]
+  }
 } 
