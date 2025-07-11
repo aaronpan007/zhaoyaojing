@@ -1,0 +1,94 @@
+{
+  "约会中感到对方冷淡": {
+    "total_docs": 10,
+    "unique_sources": 2,
+    "diversity_score": 0.2,
+    "source_distribution": {
+      "谜男方法.pdf": 9,
+      "AB的異想世界- Game出你的社交圈.pdf": 1
+    }
+  },
+  "Jordan Peterson个人责任建议": {
+    "total_docs": 10,
+    "unique_sources": 3,
+    "diversity_score": 0.3,
+    "source_distribution": {
+      "12-Rules-for-Life.pdf": 2,
+      "jordan peterson2.pdf": 7,
+      "Jordan_Peterson_Toxic_Masculinity_FINAL_20250701_152610.txt": 1
+    }
+  },
+  "谜男方法社交技巧": {
+    "total_docs": 10,
+    "unique_sources": 1,
+    "diversity_score": 0.1,
+    "source_distribution": {
+      "谜男方法.pdf": 10
+    }
+  },
+  "红药丸理论两性动态": {
+    "total_docs": 10,
+    "unique_sources": 4,
+    "diversity_score": 0.4,
+    "source_distribution": {
+      "紅藥丸覺醒紀元電子書.pdf": 4,
+      "【Week3】红药丸之两性动态思维与策略（上）.docx": 3,
+      "【Week1】蓝药丸制约与红药丸觉醒世界观（上）.docx": 2,
+      "【Week1】蓝药丸制约与红药丸觉醒世界观（中）.docx": 1
+    }
+  },
+  "Sadia Khan现代关系分析": {
+    "total_docs": 10,
+    "unique_sources": 10,
+    "diversity_score": 1.0,
+    "source_distribution": {
+      "Why Modern Society Is Destroying Accountability — Sadia Khan Speaks the Uncomfortable Truth_OxEntopyYM4.txt": 1,
+      "Why Relationships Fail in 2025 – Sadia Khan Breaks It Down_V0OmQ6uaFtk.txt": 1,
+      "You Want a 10… But Are You Even a 6 Sadia Khan Exposes the Truth_PfH4q3xL49s.txt": 1,
+      "Why Men Obsess Over the Wrong Women – Sadia Khan Explains_M7odOk3TXwA.txt": 1,
+      "The Biggest Difference Between Men and Women - Sadia Khan Exposes the Thuth_2w0ltbchkko.txt": 1,
+      "Why They’re Not Meeting Your Needs Sadia Khan Explains_vTODkTflBQ8.txt": 1,
+      "The Secret to Long-Term Love Isn’t Desire – Sadia Khan Explains_VtGXyhXiquY.txt": 1,
+      "This 3 Step Method Can Save Your Relationship_ccZKbnlbIKg.txt": 1,
+      "Who Would Stay If You Lost Everything Sadia Khan Explains_MO8kTrzM68U.txt": 1,
+      "ICK vs RED FLAG vs DEAL BREAKER – Sadia Khan Explains the Difference_KaS3F8OLjts.txt": 1
+    }
+  },
+  "如何提升自信": {
+    "total_docs": 10,
+    "unique_sources": 6,
+    "diversity_score": 0.6,
+    "source_distribution": {
+      "【Week3】红药丸之两性动态思维与策略（中）.docx": 2,
+      "谜男方法.pdf": 3,
+      "【Week4】六大属性硬价值之自我提升（中）.docx": 2,
+      "12-Rules-for-Life.pdf": 1,
+      "AB的異想世界- Game出你的社交圈.pdf": 1,
+      "【Week4】六大属性硬价值之自我提升（上）.docx": 1
+    }
+  },
+  "女性心理分析": {
+    "total_docs": 10,
+    "unique_sources": 4,
+    "diversity_score": 0.4,
+    "source_distribution": {
+      "谜男方法.pdf": 5,
+      "紅藥丸覺醒紀元電子書.pdf": 3,
+      "【Week2】女人的择偶策略（下）.docx": 1,
+      "【Week4】六大属性硬价值之自我提升（上）.docx": 1
+    }
+  },
+  "社交价值提升": {
+    "total_docs": 10,
+    "unique_sources": 6,
+    "diversity_score": 0.6,
+    "source_distribution": {
+      "【Week4】六大属性硬价值之自我提升（中）.docx": 1,
+      "AB的異想世界- Game出你的社交圈.pdf": 1,
+      "紅藥丸覺醒紀元電子書.pdf": 3,
+      "谜男方法.pdf": 2,
+      "【Week4】六大属性硬价值之自我提升（下）.docx": 2,
+      "【Week4】六大属性硬价值之自我提升（答疑）.docx": 1
+    }
+  }
+}

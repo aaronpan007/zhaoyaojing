@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- 背景 -->
+  <rect width="512" height="512" fill="#f59e0b" rx="64"/>
+  
+  <!-- 外层圆形边框 -->
+  <circle cx="256" cy="256" r="200" fill="#000" stroke="#000" stroke-width="8"/>
+  
+  <!-- 内层背景 -->
+  <circle cx="256" cy="256" r="192" fill="#fef3c7"/>
+  
+  <!-- 镜子反光效果 -->
+  <ellipse cx="220" cy="200" rx="60" ry="80" fill="#fff" opacity="0.3"/>
+  
+  <!-- 中心图标 - 盾牌 -->
+  <path d="M256 120 
+           L320 150
+           L320 280
+           Q320 340 256 380
+           Q192 340 192 280
+           L192 150
+           Z" fill="#000"/>
+           
+  <!-- 盾牌内部 -->
+  <path d="M256 140
+           L300 165
+           L300 270
+           Q300 320 256 350
+           Q212 320 212 270
+           L212 165
+           Z" fill="#f59e0b"/>
+           
+  <!-- 警告符号 -->
+  <polygon points="256,200 246,260 266,260" fill="#000"/>
+  <circle cx="256" cy="280" r="8" fill="#000"/>
+  
+  <!-- 底部文字区域 -->
+  <rect x="160" y="400" width="192" height="40" fill="#000" rx="20"/>
+  <text x="256" y="425" text-anchor="middle" fill="#f59e0b" font-family="Arial, sans-serif" font-size="24" font-weight="bold">照妖镜</text>
+</svg> 

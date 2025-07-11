@@ -1,0 +1,68 @@
+{
+  "name": "捞男捞女照妖镜",
+  "short_name": "照妖镜",
+  "description": "AI情感安全助理 - 智能分析约会对象，保护您的情感安全",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#667eea",
+  "theme_color": "#667eea",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "zh-CN",
+  "categories": ["lifestyle", "social", "dating"],
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/icon-512.png", 
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ],
+  "features": [
+    "语音转文字分析",
+    "图片智能识别", 
+    "约会前预警",
+    "约会后复盘",
+    "情感安全评估"
+  ],
+  "shortcuts": [
+    {
+      "name": "语音分析",
+      "short_name": "语音",
+      "description": "快速分析语音内容",
+      "url": "/?mode=audio",
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "图片分析",
+      "short_name": "图片", 
+      "description": "智能分析图片内容",
+      "url": "/?mode=image",
+      "icons": [
+        {
+          "src": "/icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+} 

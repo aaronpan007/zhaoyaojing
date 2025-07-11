@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>前后端数据管道测试工具</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .title {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+        .section {
+            margin-bottom: 25px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: #fafafa;
+        }
+        .section h3 {
+            margin-top: 0;
+            color: #555;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #333;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        textarea {
+            height: 80px;
+            resize: vertical;
+        }
+        .file-upload {
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            background-color: #f9f9f9;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .file-upload:hover {
+            border-color: #007bff;
+            background-color: #f0f8ff;
+        }
+        .file-upload.dragover {
+            border-color: #007bff;
+            background-color: #e3f2fd;
+        }
+        .file-list {
+            margin-top: 10px;
+        }
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background-color: #e8f5e8;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
+        .button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .test-results {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+        }
+        .log-entry {
+            font-family: 'Courier New', monospace;
+            background-color: #f4f4f4;
+            padding: 8px;
+            margin: 5px 0;
+            border-radius: 3px;
+            font-size: 12px;
+            color: #333;
+        }
+        .log-success { border-left: 3px solid #28a745; }
+        .log-warning { border-left: 3px solid #ffc107; }
+        .log-error { border-left: 3px solid #dc3545; }
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background-color: #e0e0e0;
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: #007bff;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-pending { background-color: #ffc107; }
+        .status-success { background-color: #28a745; }
+        .status-error { background-color: #dc3545; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">🔧 前后端数据管道测试工具</h1>
+        
+        <!-- 服务器状态检查 -->
+        <div class="section">
+            <h3>🌐 服务器连接状态</h3>
+            <div id="server-status">
+                <span class="status-indicator status-pending"></span>
+                <span>正在检查服务器状态...</span>
+            </div>
+            <button class="button" onclick="checkServerStatus()" style="margin-top: 10px;">
+                重新检查服务器状态
+            </button>
+        </div>
+
+        <!-- 表单数据输入 -->
+        <div class="section">
+            <h3>📝 表单数据测试</h3>
+            <form id="test-form">
+                <div class="form-group">
+                    <label for="nickname">昵称</label>
+                    <input type="text" id="nickname" name="nickname" value="测试用户Alex" placeholder="输入昵称">
+                </div>
+                
+                <div class="form-group">
+                    <label for="profession">职业</label>
+                    <input type="text" id="profession" name="profession" value="金融科技投资顾问" placeholder="输入职业">
+                </div>
+                
+                <div class="form-group">
+                    <label for="age">年龄</label>
+                    <input type="text" id="age" name="age" value="32" placeholder="输入年龄">
+                </div>
+                
+                <div class="form-group">
+                    <label for="bioOrChatHistory">个人简介</label>
+                    <textarea id="bioOrChatHistory" name="bioOrChatHistory" placeholder="输入个人简介或聊天记录">一个不断探索边界的连续创业者和投资人。工作日，我在数字和市场的世界里驰骋；周末，你可能会在某个私人飞行俱乐部的驾驶舱，或者在阿尔卑斯的滑雪道上找到我。</textarea>
+                </div>
+            </form>
+        </div>
+
+        <!-- 文件上传测试 -->
+        <div class="section">
+            <h3>📎 文件上传测试</h3>
+            <div class="file-upload" id="file-upload-area">
+                <p>📁 拖拽图片文件到这里或点击选择</p>
+                <p style="font-size: 12px; color: #666;">支持 PNG, JPG, JPEG 格式，最大 10MB</p>
+                <input type="file" id="file-input" multiple accept="image/*" style="display: none;">
+            </div>
+            <div class="file-list" id="file-list"></div>
+        </div>
+
+        <!-- 测试控制 -->
+        <div class="section">
+            <h3>🧪 数据管道测试</h3>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button class="button" onclick="testTextDataOnly()" id="test-text-btn">
+                    测试纯文本数据传输
+                </button>
+                <button class="button" onclick="testFileUploadOnly()" id="test-file-btn">
+                    测试纯文件上传
+                </button>
+                <button class="button" onclick="testCompleteDataPipeline()" id="test-complete-btn">
+                    测试完整数据管道
+                </button>
+                <button class="button" onclick="clearLogs()" style="background-color: #6c757d;">
+                    清空日志
+                </button>
+            </div>
+            
+            <div class="progress-bar" id="progress-bar" style="display: none;">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+        </div>
+
+        <!-- 测试结果显示 -->
+        <div class="test-results" id="test-results">
+            <h4>📊 测试日志</h4>
+            <div id="log-container">
+                <div class="log-entry">等待开始测试...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedFiles = [];
+        let isServerHealthy = false;
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            setupFileUpload();
+            checkServerStatus();
+        });
+
+        // 日志管理
+        function log(message, type = 'info') {
+            const logContainer = document.getElementById('log-container');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.className = `log-entry log-${type}`;
+            logEntry.innerHTML = `[${timestamp}] ${message}`;
+            logContainer.appendChild(logEntry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        function clearLogs() {
+            document.getElementById('log-container').innerHTML = '';
+            log('日志已清空');
+        }
+
+        // 进度条管理
+        function showProgress() {
+            document.getElementById('progress-bar').style.display = 'block';
+            document.getElementById('progress-fill').style.width = '0%';
+        }
+
+        function updateProgress(percent) {
+            document.getElementById('progress-fill').style.width = percent + '%';
+        }
+
+        function hideProgress() {
+            setTimeout(() => {
+                document.getElementById('progress-bar').style.display = 'none';
+            }, 500);
+        }
+
+        // 服务器状态检查
+        async function checkServerStatus() {
+            const statusElement = document.getElementById('server-status');
+            log('🔍 开始检查服务器状态...');
+            
+            try {
+                const response = await fetch('http://localhost:3001/api/health');
+                if (response.ok) {
+                    const healthData = await response.json();
+                    isServerHealthy = true;
+                    statusElement.innerHTML = `
+                        <span class="status-indicator status-success"></span>
+                        <span>✅ 服务器连接正常 (${healthData.version})</span>
+                    `;
+                    log('✅ 后端服务器连接成功', 'success');
+                    log(`📄 服务器信息: ${healthData.version}`, 'info');
+                    log(`🔧 API地址: http://localhost:3001`, 'info');
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                isServerHealthy = false;
+                statusElement.innerHTML = `
+                    <span class="status-indicator status-error"></span>
+                    <span>❌ 服务器连接失败: ${error.message}</span>
+                `;
+                log(`❌ 服务器连接失败: ${error.message}`, 'error');
+                log('💡 请确保后端服务器在 http://localhost:3001 正常运行', 'warning');
+            }
+        }
+
+        // 文件上传处理
+        function setupFileUpload() {
+            const uploadArea = document.getElementById('file-upload-area');
+            const fileInput = document.getElementById('file-input');
+
+            uploadArea.addEventListener('click', () => fileInput.click());
+            
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+            
+            uploadArea.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+            });
+            
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                handleFiles(Array.from(e.dataTransfer.files));
+            });
+            
+            fileInput.addEventListener('change', (e) => {
+                handleFiles(Array.from(e.target.files));
+            });
+        }
+
+        function handleFiles(files) {
+            log(`📁 选择了 ${files.length} 个文件`);
+            selectedFiles = [];
+            
+            files.forEach((file, index) => {
+                if (file.type.startsWith('image/')) {
+                    selectedFiles.push(file);
+                    log(`📎 文件 ${index + 1}: ${file.name} (${Math.round(file.size / 1024)}KB, ${file.type})`, 'success');
+                } else {
+                    log(`⚠️ 跳过非图片文件: ${file.name}`, 'warning');
+                }
+            });
+            
+            updateFileList();
+            log(`✅ 总共选择了 ${selectedFiles.length} 个有效图片文件`);
+        }
+
+        function updateFileList() {
+            const fileList = document.getElementById('file-list');
+            fileList.innerHTML = '';
+            
+            selectedFiles.forEach((file, index) => {
+                const fileItem = document.createElement('div');
+                fileItem.className = 'file-item';
+                fileItem.innerHTML = `
+                    <span>📎 ${file.name} (${Math.round(file.size / 1024)}KB)</span>
+                    <button onclick="removeFile(${index})" style="background: #dc3545; color: white; border: none; padding: 4px 8px; border-radius: 3px; cursor: pointer;">删除</button>
+                `;
+                fileList.appendChild(fileItem);
+            });
+        }
+
+        function removeFile(index) {
+            selectedFiles.splice(index, 1);
+            updateFileList();
+            log(`🗑️ 已删除文件 ${index + 1}`);
+        }
+
+        // 获取表单数据
+        function getFormData() {
+            return {
+                nickname: document.getElementById('nickname').value.trim(),
+                profession: document.getElementById('profession').value.trim(),
+                age: document.getElementById('age').value.trim(),
+                bioOrChatHistory: document.getElementById('bioOrChatHistory').value.trim()
+            };
+        }
+
+        // 构建FormData对象
+        function buildFormData(includeFiles = true) {
+            const formData = new FormData();
+            const textData = getFormData();
+            
+            // 添加文本数据
+            Object.entries(textData).forEach(([key, value]) => {
+                formData.append(key, value);
+                log(`📝 添加文本字段: ${key} = "${value}"`);
+            });
+            
+            // 添加文件
+            if (includeFiles && selectedFiles.length > 0) {
+                selectedFiles.forEach((file, index) => {
+                    formData.append('images', file);
+                    log(`📎 添加文件 ${index + 1}: ${file.name} (${file.size} 字节)`);
+                });
+            }
+            
+            return formData;
+        }
+
+        // 测试1: 纯文本数据传输
+        async function testTextDataOnly() {
+            if (!isServerHealthy) {
+                log('❌ 服务器未连接，无法进行测试', 'error');
+                return;
+            }
+
+            log('🧪 开始测试: 纯文本数据传输');
+            showProgress();
+            
+            try {
+                updateProgress(25);
+                const formData = buildFormData(false); // 不包含文件
+                
+                updateProgress(50);
+                log('🚀 发送请求到后端...');
+                
+                const response = await fetch('http://localhost:3001/api/generate_warning_report', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                updateProgress(75);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const result = await response.json();
+                updateProgress(100);
+                
+                log('✅ 纯文本数据传输测试成功!', 'success');
+                log(`📊 后端响应状态: ${result.success ? '成功' : '失败'}`, 'success');
+                log(`⏱️ 处理时间: ${result.processing_time}`, 'info');
+                log(`🎯 风险等级: ${result.final_report?.risk_level || 'N/A'}`, 'info');
+                
+            } catch (error) {
+                log(`❌ 纯文本数据传输测试失败: ${error.message}`, 'error');
+            } finally {
+                hideProgress();
+            }
+        }
+
+        // 测试2: 纯文件上传
+        async function testFileUploadOnly() {
+            if (!isServerHealthy) {
+                log('❌ 服务器未连接，无法进行测试', 'error');
+                return;
+            }
+
+            if (selectedFiles.length === 0) {
+                log('⚠️ 请先选择至少一个图片文件', 'warning');
+                return;
+            }
+
+            log('🧪 开始测试: 纯文件上传');
+            showProgress();
+            
+            try {
+                updateProgress(25);
+                const formData = new FormData();
+                
+                // 只添加必要的文本字段和文件
+                formData.append('nickname', '文件测试用户');
+                formData.append('profession', '测试');
+                formData.append('age', '30');
+                formData.append('bioOrChatHistory', '文件上传测试');
+                
+                selectedFiles.forEach((file, index) => {
+                    formData.append('images', file);
+                    log(`📎 添加测试文件 ${index + 1}: ${file.name}`);
+                });
+                
+                updateProgress(50);
+                log('🚀 发送文件上传请求到后端...');
+                
+                const response = await fetch('http://localhost:3001/api/generate_warning_report', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                updateProgress(75);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const result = await response.json();
+                updateProgress(100);
+                
+                log('✅ 文件上传测试成功!', 'success');
+                log(`📊 后端响应状态: ${result.success ? '成功' : '失败'}`, 'success');
+                log(`📸 处理图片数: ${result.analysis_stats?.images_processed || 0}`, 'info');
+                log(`✅ 成功处理图片数: ${result.analysis_stats?.images_successful || 0}`, 'success');
+                
+            } catch (error) {
+                log(`❌ 文件上传测试失败: ${error.message}`, 'error');
+            } finally {
+                hideProgress();
+            }
+        }
+
+        // 测试3: 完整数据管道
+        async function testCompleteDataPipeline() {
+            if (!isServerHealthy) {
+                log('❌ 服务器未连接，无法进行测试', 'error');
+                return;
+            }
+
+            log('🧪 开始测试: 完整数据管道 (文本 + 文件)');
+            showProgress();
+            
+            try {
+                updateProgress(20);
+                log('📋 验证表单数据...');
+                const textData = getFormData();
+                
+                if (!textData.nickname) {
+                    throw new Error('昵称不能为空');
+                }
+                
+                updateProgress(40);
+                log('📦 构建完整FormData...');
+                const formData = buildFormData(true); // 包含文件
+                
+                // 验证FormData内容
+                log('🔍 FormData内容验证:');
+                for (let [key, value] of formData.entries()) {
+                    if (value instanceof File) {
+                        log(`   ${key}: [File] ${value.name} (${value.size} bytes)`);
+                    } else {
+                        log(`   ${key}: ${value}`);
+                    }
+                }
+                
+                updateProgress(60);
+                log('🚀 发送完整数据到后端...');
+                
+                const startTime = Date.now();
+                const response = await fetch('http://localhost:3001/api/generate_warning_report', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                updateProgress(80);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
+                }
+                
+                const result = await response.json();
+                const endTime = Date.now();
+                updateProgress(100);
+                
+                log('✅ 完整数据管道测试成功!', 'success');
+                log(`📊 后端响应状态: ${result.success ? '成功' : '失败'}`, 'success');
+                log(`⏱️ 总响应时间: ${endTime - startTime}ms`, 'info');
+                log(`📄 处理时间: ${result.processing_time}`, 'info');
+                log(`📸 处理图片数: ${result.analysis_stats?.images_processed || 0}`, 'info');
+                log(`✅ 成功分析图片数: ${result.analysis_stats?.images_successful || 0}`, 'success');
+                log(`🎯 最终风险等级: ${result.final_report?.risk_level || 'N/A'}`, 'info');
+                log(`🔧 系统版本: ${result.system_info?.version || 'N/A'}`, 'info');
+                
+                // 显示详细分析结果
+                if (result.final_report) {
+                    log('📋 关键发现数量: ' + Object.keys(result.final_report.key_findings || {}).length, 'info');
+                }
+                
+            } catch (error) {
+                log(`❌ 完整数据管道测试失败: ${error.message}`, 'error');
+                console.error('详细错误信息:', error);
+            } finally {
+                hideProgress();
+            }
+        }
+
+        // 页面加载完成后自动检查服务器状态
+        window.addEventListener('load', () => {
+            log('🎯 数据管道测试工具已准备就绪');
+            log('💡 请先检查服务器状态，然后进行各项测试');
+        });
+    </script>
+</body>
+</html> 
+ 
+ 
+ 
+ 

@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI情感安全助理 - 完整测试</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        .file-upload {
+            border: 2px dashed #007acc;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: #007acc;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .submit-btn:disabled {
+            background: #ccc;
+        }
+        .message {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .debug {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛡️ AI情感安全助理</h1>
+            <p>完整前后端数据管道测试</p>
+        </div>
+        
+        <form id="testForm">
+            <div class="form-group">
+                <label for="nickname">昵称 *</label>
+                <input type="text" id="nickname" required placeholder="对方的昵称">
+            </div>
+            
+            <div class="form-group">
+                <label for="profession">职业</label>
+                <input type="text" id="profession" placeholder="对方的职业">
+            </div>
+            
+            <div class="form-group">
+                <label for="age">年龄</label>
+                <input type="text" id="age" placeholder="对方的年龄">
+            </div>
+            
+            <div class="form-group">
+                <label for="bioOrChatHistory">个人简介</label>
+                <textarea id="bioOrChatHistory" placeholder="对方的个人简介或聊天记录..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>上传图片</label>
+                <div class="file-upload" onclick="document.getElementById('images').click()">
+                    <input type="file" id="images" multiple accept="image/*" style="display:none">
+                    📎 点击选择图片文件
+                </div>
+                <div id="fileList"></div>
+            </div>
+            
+            <button type="submit" class="submit-btn" id="submitBtn">
+                🔍 生成安全评估报告
+            </button>
+        </form>
+        
+        <div id="messages"></div>
+        <div id="debug" class="debug" style="display:none;"></div>
+    </div>
+
+    <script>
+        let selectedFiles = [];
+        
+        // 文件选择处理
+        document.getElementById('images').addEventListener('change', function(e) {
+            selectedFiles = Array.from(e.target.files);
+            updateFileList();
+        });
+        
+        function updateFileList() {
+            const fileList = document.getElementById('fileList');
+            if (selectedFiles.length > 0) {
+                fileList.innerHTML = selectedFiles.map(f => 
+                    `<div style="margin-top:8px; padding:8px; background:#f0f0f0; border-radius:4px;">
+                        📷 ${f.name} (${Math.round(f.size/1024)}KB)
+                    </div>`
+                ).join('');
+            } else {
+                fileList.innerHTML = '';
+            }
+        }
+        
+        function showMessage(text, type) {
+            const div = document.createElement('div');
+            div.className = `message ${type}`;
+            div.textContent = text;
+            document.getElementById('messages').innerHTML = '';
+            document.getElementById('messages').appendChild(div);
+        }
+        
+        function showDebug(text) {
+            const debugDiv = document.getElementById('debug');
+            debugDiv.style.display = 'block';
+            debugDiv.textContent = text;
+        }
+        
+        // 表单提交
+        document.getElementById('testForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = '🔄 正在处理...';
+            
+            try {
+                // 获取表单数据
+                const nickname = document.getElementById('nickname').value.trim();
+                const profession = document.getElementById('profession').value.trim();
+                const age = document.getElementById('age').value.trim();
+                const bioOrChatHistory = document.getElementById('bioOrChatHistory').value.trim();
+                
+                if (!nickname) {
+                    throw new Error('请输入昵称');
+                }
+                
+                // 构建FormData
+                const formData = new FormData();
+                formData.append('nickname', nickname);
+                formData.append('profession', profession);
+                formData.append('age', age);
+                formData.append('bioOrChatHistory', bioOrChatHistory);
+                formData.append('analysis_context', '前端表单测试');
+                
+                // 添加文件
+                selectedFiles.forEach(file => {
+                    formData.append('images', file);
+                });
+                
+                // 调试信息
+                const debugInfo = {
+                    发送时间: new Date().toLocaleString(),
+                    表单数据: { nickname, profession, age, bioOrChatHistory: bioOrChatHistory.substring(0, 50) + '...' },
+                    文件数量: selectedFiles.length,
+                    文件信息: selectedFiles.map(f => ({ name: f.name, size: f.size }))
+                };
+                
+                showDebug('🚀 发送数据...\n' + JSON.stringify(debugInfo, null, 2));
+                console.log('🚀 发送FormData到API...', debugInfo);
+                
+                // 发送请求
+                const response = await fetch('http://localhost:3001/api/generate_warning_report', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                console.log('📡 响应状态:', response.status);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
+                }
+                
+                const result = await response.json();
+                console.log('✅ API响应:', result);
+                
+                // 更新调试信息
+                debugInfo.响应状态 = response.status;
+                debugInfo.响应成功 = result.success;
+                debugInfo.风险等级 = result.data?.risk_level;
+                debugInfo.处理统计 = result.data?.system_info?.processing_stats;
+                
+                showDebug('✅ 完整响应\n' + JSON.stringify(debugInfo, null, 2));
+                
+                if (result.success) {
+                    showMessage(`✅ 测试成功！风险等级: ${result.data.risk_level}`, 'success');
+                } else {
+                    showMessage(`⚠️ API返回失败: ${result.message}`, 'error');
+                }
+                
+            } catch (error) {
+                console.error('❌ 请求失败:', error);
+                showMessage(`❌ 请求失败: ${error.message}`, 'error');
+                showDebug(`❌ 错误:\n${error.message}\n${error.stack || ''}`);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '🔍 生成安全评估报告';
+            }
+        });
+        
+        // 页面加载检查
+        window.addEventListener('load', function() {
+            console.log('🎯 前端页面已加载');
+            
+            // 测试后端连接
+            fetch('http://localhost:3001/api/health')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('✅ 后端连接正常:', data);
+                    showMessage('✅ 系统就绪，后端API连接正常', 'success');
+                })
+                .catch(error => {
+                    console.error('❌ 后端连接失败:', error);
+                    showMessage('⚠️ 后端API连接失败，请确保服务器在3001端口运行', 'error');
+                });
+        });
+    </script>
+</body>
+</html> 
