@@ -1,11 +1,19 @@
 {
-  "functions": {
-    "api/**/*.js": {
-      "maxDuration": 60
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/server.js",
+      "use": "@vercel/node"
     },
-    "api/**/*.py": {
-      "maxDuration": 300,
-      "memory": 1024
+    {
+      "src": "requirements.txt",
+      "use": "@vercel/python"
     }
-  }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/server"
+    }
+  ]
 }
