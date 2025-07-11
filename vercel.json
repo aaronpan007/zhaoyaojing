@@ -1,23 +1,11 @@
 {
   "functions": {
     "api/**/*.py": {
-      "runtime": "python3.9"
+      "runtime": "python3.9",
+      "memory": 512,
+      "maxDuration": 30
     }
   },
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/static-build",
-      "config": { "distDir": "dist" }
-    },
-    {
-      "src": "api/**/*.py",
-      "use": "@vercel/python",
-      "config": {
-        "maxLambdaSize": "50mb"
-      }
-    }
-  ],
   "rewrites": [
     {
       "source": "/api/(.*)",
@@ -28,7 +16,6 @@
       "destination": "/index.html"
     }
   ],
-  "installCommand": "npm install",
   "buildCommand": "npm run build",
   "outputDirectory": "dist"
 }
