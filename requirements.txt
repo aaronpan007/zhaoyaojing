@@ -6,4 +6,4 @@ llama-index-core==0.12.48
 llama-index-embeddings-openai==0.3.1
 # 兼容Python 3.9的向量存储组件  
 llama-index-vector-stores-chroma==0.4.1
-flask==3.0.0 
+flask==3.0.0
