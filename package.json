@@ -5,11 +5,11 @@
   "private": true,
   "type": "module",
   "scripts": {
-  "dev": "vite",
-  "build": "vite build",
-  "postinstall": "pip install -r requirements.txt",
-  "vercel-build": "npm run postinstall && npm run build"
-},
+    "dev": "vite",
+    "build": "vite build",
+    "postinstall": "pip install -r requirements.txt",
+    "vercel-build": "npm run postinstall && npm run build"
+  },
   "dependencies": {
     "@tailwindcss/typography": "^0.5.16",
     "@types/marked": "^5.0.2",
